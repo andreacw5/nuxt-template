@@ -1,10 +1,30 @@
 <script setup lang="ts">
+import { useTheme } from 'vuetify';
+import { useThemeStore } from '~/stores/theme';
+
 const route = useRoute();
 const { locale, locales, setLocale, t } = useI18n();
+const theme = useTheme();
+const themeStore = useThemeStore();
 
 const userMenu = ref(false);
 const logoutDialog = ref(false);
 const dialog = ref(false);
+
+// Inizializza il tema al caricamento
+onMounted(() => {
+  themeStore.initTheme();
+  theme.global.name.value = themeStore.currentTheme;
+});
+
+// Osserva i cambiamenti del tema
+watch(() => themeStore.isDark, (isDark) => {
+  theme.global.name.value = isDark ? 'dark' : 'light';
+});
+
+const toggleTheme = () => {
+  themeStore.toggleTheme();
+};
 
 const handleLogout = () => {
   userMenu.value = false;
@@ -30,7 +50,23 @@ const openAddEventDialog = () => {
 };
 
 const changeLanguage = (lang: string) => {
-  setLocale(lang);
+  setLocale(lang as 'en' | 'it');
+};
+
+const getLanguageFlag = (lang: string) => {
+  const flags: Record<string, string> = {
+    'en': '🇬🇧',
+    'it': '🇮🇹'
+  };
+  return flags[lang] || '🌐';
+};
+
+const getLanguageName = (lang: string) => {
+  const names: Record<string, string> = {
+    'en': 'English',
+    'it': 'Italiano'
+  };
+  return names[lang] || lang.toUpperCase();
 };
 
 const isMonitoringPage = computed(() => route.path === '/events');
@@ -40,17 +76,17 @@ const isMonitoringPage = computed(() => route.path === '/events');
   <v-app>
     <!-- App Bar PLM Style -->
     <v-app-bar
-      color="primary"
-      elevation="2"
+      :color="themeStore.isDark ? 'surface' : 'primary'"
+      :elevation="themeStore.isDark ? 4 : 2"
       height="64"
     >
       <v-container class="d-flex align-center px-4" fluid>
         <!-- Logo e titolo -->
         <div class="d-flex align-center ga-3 mr-10">
-          <v-avatar color="white" rounded="lg" size="40">
-            <v-icon color="primary" size="24">mdi-apps</v-icon>
+          <v-avatar :color="themeStore.isDark ? 'primary' : 'white'" rounded="lg" size="40">
+            <v-icon :color="themeStore.isDark ? 'white' : 'primary'" size="24">mdi-apps</v-icon>
           </v-avatar>
-          <span class="text-h6 font-weight-bold text-white">{{ t('app.name') }}</span>
+          <span class="text-h6 font-weight-bold" :class="themeStore.isDark ? 'text-on-surface' : 'text-white'">{{ t('app.name') }}</span>
         </div>
 
         <!-- Navigation Menu -->
@@ -61,7 +97,7 @@ const isMonitoringPage = computed(() => route.path === '/events');
             class="text-none px-4"
             prepend-icon="mdi-home"
             variant="text"
-            color="white"
+            :color="themeStore.isDark ? 'on-surface' : 'white'"
             height="64"
             rounded="0"
           >
@@ -74,7 +110,7 @@ const isMonitoringPage = computed(() => route.path === '/events');
               class="text-none px-4"
               prepend-icon="mdi-calendar"
               variant="text"
-              color="white"
+              :color="themeStore.isDark ? 'on-surface' : 'white'"
               height="64"
               rounded="0"
           >
@@ -87,7 +123,7 @@ const isMonitoringPage = computed(() => route.path === '/events');
             class="text-none px-4"
             prepend-icon="mdi-cog"
             variant="text"
-            color="white"
+            :color="themeStore.isDark ? 'on-surface' : 'white'"
             height="64"
             rounded="0"
           >
@@ -97,11 +133,25 @@ const isMonitoringPage = computed(() => route.path === '/events');
 
         <v-spacer />
 
+        <!-- Theme Switcher -->
+        <v-btn
+          icon
+          @click="toggleTheme"
+          variant="text"
+          :color="themeStore.isDark ? 'secondary' : 'white'"
+          class="mr-2"
+        >
+          <v-icon>{{ themeStore.isDark ? 'mdi-weather-sunny' : 'mdi-weather-night' }}</v-icon>
+          <v-tooltip activator="parent" location="bottom">
+            {{ themeStore.isDark ? t('theme.light') : t('theme.dark') }}
+          </v-tooltip>
+        </v-btn>
+
         <!-- User Menu -->
         <div class="d-flex align-center ga-4">
           <div class="text-right d-none d-sm-block">
-            <div class="text-body-2 font-weight-medium text-white">John Doe</div>
-            <div class="text-caption" style="color: rgba(255, 255, 255, 0.8);">{{ t('user.role') }}</div>
+            <div class="text-body-2 font-weight-medium" :class="themeStore.isDark ? 'text-on-surface' : 'text-white'">John Doe</div>
+            <div class="text-caption" :style="{ color: themeStore.isDark ? 'rgba(193, 193, 193, 0.8)' : 'rgba(255, 255, 255, 0.8)' }">{{ t('user.role') }}</div>
           </div>
 
           <v-menu v-model="userMenu" location="bottom end">
@@ -110,10 +160,10 @@ const isMonitoringPage = computed(() => route.path === '/events');
                 icon
                 v-bind="props"
                 variant="text"
-                color="white"
+                :color="themeStore.isDark ? 'on-surface' : 'white'"
               >
-                <v-avatar color="white" size="36">
-                  <v-icon color="primary">mdi-account</v-icon>
+                <v-avatar :color="themeStore.isDark ? 'primary' : 'white'" size="36">
+                  <v-icon :color="themeStore.isDark ? 'on-primary' : 'primary'">mdi-account</v-icon>
                 </v-avatar>
               </v-btn>
             </template>
@@ -147,27 +197,25 @@ const isMonitoringPage = computed(() => route.path === '/events');
 
               <v-divider />
 
-              <v-list-item>
+              <v-list-item
+                v-for="lang in locales"
+                :key="lang.code"
+                :value="lang.code"
+                :active="locale === lang.code"
+                @click="changeLanguage(lang.code)"
+                class="language-item"
+                density="compact"
+                min-height="32"
+              >
                 <template v-slot:prepend>
-                  <v-icon>mdi-translate</v-icon>
+                  <div class="language-flag">{{ getLanguageFlag(lang.code) }}</div>
                 </template>
-                <v-list-item-title>{{ t('user.language') }}</v-list-item-title>
-                <template v-slot:append>
-                  <v-btn-toggle
-                    :model-value="locale"
-                    @update:model-value="changeLanguage"
-                    mandatory
-                    color="primary"
-                    density="compact"
-                  >
-                    <v-btn value="en" size="small">
-                      EN
-                    </v-btn>
-                    <v-btn value="it" size="small">
-                      IT
-                    </v-btn>
-                  </v-btn-toggle>
-                </template>
+                <v-list-item-title class="d-flex align-center justify-space-between text-body-2">
+                  <span class="text-caption">{{ getLanguageName(lang.code) }}</span>
+                  <v-icon v-if="locale === lang.code" color="primary" size="x-small">
+                    mdi-check-circle
+                  </v-icon>
+                </v-list-item-title>
               </v-list-item>
 
               <v-divider />
@@ -246,7 +294,7 @@ const isMonitoringPage = computed(() => route.path === '/events');
   left: 0;
   right: 0;
   height: 3px;
-  background-color: white;
+  background-color: currentColor;
   transform: scaleX(0);
   transition: transform 0.3s ease;
 }
@@ -256,17 +304,52 @@ const isMonitoringPage = computed(() => route.path === '/events');
 }
 
 .nav-item--active {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(var(--v-theme-on-surface), 0.12);
   font-weight: 600;
 }
 
+.v-theme--light .nav-item--active {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
 .nav-item:not(.nav-item--active):hover {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(var(--v-theme-on-surface), 0.08);
+}
+
+.v-theme--light .nav-item:not(.nav-item--active):hover {
+  background-color: rgba(255, 255, 255, 0.08);
 }
 
 .nav-item:not(.nav-item--active):hover::after {
   transform: scaleX(0.5);
   opacity: 0.5;
+}
+
+.language-item {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 2px 12px !important;
+}
+
+.language-item:hover {
+  background-color: rgb(var(--v-theme-primary), 0.12);
+}
+
+.language-flag {
+  font-size: 14px;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: rgb(var(--v-theme-surface-variant));
+  transition: all 0.2s ease;
+  margin-right: 6px;
+}
+
+.language-item:hover .language-flag {
+  transform: scale(1.05);
 }
 </style>
 

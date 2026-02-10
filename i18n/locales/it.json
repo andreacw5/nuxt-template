@@ -62,5 +62,9 @@
   "languages": {
     "en": "English",
     "it": "Italiano"
+  },
+  "theme": {
+    "light": "Passa a Modalità Chiara",
+    "dark": "Passa a Modalità Scura"
   }
 }

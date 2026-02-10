@@ -62,5 +62,9 @@
   "languages": {
     "en": "English",
     "it": "Italiano"
+  },
+  "theme": {
+    "light": "Switch to Light Mode",
+    "dark": "Switch to Dark Mode"
   }
 }

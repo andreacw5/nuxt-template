@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { useItemStore } from '~/stores';
+import { useThemeStore } from '~/stores/theme';
 
 const { t } = useI18n();
 const itemStore = useItemStore();
+const themeStore = useThemeStore();
 
 const dialog = ref(false);
 const deleteDialog = ref(false);
@@ -87,7 +89,6 @@ const headers = computed(() => [
         <h1 class="text-h5 font-weight-bold mb-6">{{ t('configuration.title') }}</h1>
 
         <v-card elevation="2">
-
           <v-card-text class="pa-0">
             <v-data-table
               :headers="headers"
