@@ -1,0 +1,59 @@
+{
+  "app": {
+    "name": "MyApp"
+  },
+  "nav": {
+    "home": "Home",
+    "events": "Events",
+    "settings": "Settings"
+  },
+  "user": {
+    "role": "User • Admin",
+    "administrator": "Administrator",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Logout",
+    "language": "Language"
+  },
+  "dialog": {
+    "confirmLogout": "Confirm Logout",
+    "logoutMessage": "Are you sure you want to logout from the application?",
+    "logoutNote": "You will need to login again to use the system.",
+    "cancel": "Cancel",
+    "confirm": "Logout",
+    "addEvent": "Add Event"
+  },
+  "configuration": {
+    "title": "Configuration",
+    "addNewItem": "Add New Item",
+    "add": "Add",
+    "delete": "Delete",
+    "confirmDelete": "Confirm Delete",
+    "deleteMessage": "Are you sure you want to delete this item?",
+    "deleteNote": "This action cannot be undone.",
+    "table": {
+      "id": "ID",
+      "name": "Name",
+      "description": "Description",
+      "type": "Type",
+      "priority": "Priority",
+      "enabled": "Enabled",
+      "actions": ""
+    },
+    "form": {
+      "itemName": "Item Name",
+      "description": "Description",
+      "priority": "Priority",
+      "type": "Type",
+      "enabled": "Enabled"
+    },
+    "status": {
+      "enabled": "Enabled",
+      "disabled": "Disabled"
+    }
+  },
+  "languages": {
+    "en": "English",
+    "it": "Italiano"
+  }
+}

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const route = useRoute();
+const { locale, locales, setLocale, t } = useI18n();
 
 const userMenu = ref(false);
 const logoutDialog = ref(false);
@@ -28,6 +29,9 @@ const openAddEventDialog = () => {
   dialog.value = true;
 };
 
+const changeLanguage = (lang: string) => {
+  setLocale(lang);
+};
 
 const isMonitoringPage = computed(() => route.path === '/events');
 </script>
@@ -46,7 +50,7 @@ const isMonitoringPage = computed(() => route.path === '/events');
           <v-avatar color="white" rounded="lg" size="40">
             <v-icon color="primary" size="24">mdi-apps</v-icon>
           </v-avatar>
-          <span class="text-h6 font-weight-bold text-white">MyApp</span>
+          <span class="text-h6 font-weight-bold text-white">{{ t('app.name') }}</span>
         </div>
 
         <!-- Navigation Menu -->
@@ -61,7 +65,7 @@ const isMonitoringPage = computed(() => route.path === '/events');
             height="64"
             rounded="0"
           >
-            Home
+            {{ t('nav.home') }}
           </v-btn>
 
           <v-btn
@@ -74,7 +78,7 @@ const isMonitoringPage = computed(() => route.path === '/events');
               height="64"
               rounded="0"
           >
-            Events
+            {{ t('nav.events') }}
           </v-btn>
 
           <v-btn
@@ -87,7 +91,7 @@ const isMonitoringPage = computed(() => route.path === '/events');
             height="64"
             rounded="0"
           >
-            Settings
+            {{ t('nav.settings') }}
           </v-btn>
         </div>
 
@@ -97,7 +101,7 @@ const isMonitoringPage = computed(() => route.path === '/events');
         <div class="d-flex align-center ga-4">
           <div class="text-right d-none d-sm-block">
             <div class="text-body-2 font-weight-medium text-white">John Doe</div>
-            <div class="text-caption" style="color: rgba(255, 255, 255, 0.8);">User • Admin</div>
+            <div class="text-caption" style="color: rgba(255, 255, 255, 0.8);">{{ t('user.role') }}</div>
           </div>
 
           <v-menu v-model="userMenu" location="bottom end">
@@ -117,7 +121,7 @@ const isMonitoringPage = computed(() => route.path === '/events');
             <v-list min-width="200">
               <v-list-item>
                 <v-list-item-title class="font-weight-medium">John Doe</v-list-item-title>
-                <v-list-item-subtitle>Administrator</v-list-item-subtitle>
+                <v-list-item-subtitle>{{ t('user.administrator') }}</v-list-item-subtitle>
               </v-list-item>
 
               <v-divider />
@@ -128,17 +132,42 @@ const isMonitoringPage = computed(() => route.path === '/events');
                 @click="openAddEventDialog"
                 class="text-primary"
               >
-                Add Event
+                {{ t('dialog.addEvent') }}
               </v-list-item>
 
               <v-divider v-if="isMonitoringPage" />
 
               <v-list-item prepend-icon="mdi-account-circle" to="/profile">
-                Profile
+                {{ t('user.profile') }}
               </v-list-item>
 
               <v-list-item prepend-icon="mdi-cog" to="/settings">
-                Settings
+                {{ t('user.settings') }}
+              </v-list-item>
+
+              <v-divider />
+
+              <v-list-item>
+                <template v-slot:prepend>
+                  <v-icon>mdi-translate</v-icon>
+                </template>
+                <v-list-item-title>{{ t('user.language') }}</v-list-item-title>
+                <template v-slot:append>
+                  <v-btn-toggle
+                    :model-value="locale"
+                    @update:model-value="changeLanguage"
+                    mandatory
+                    color="primary"
+                    density="compact"
+                  >
+                    <v-btn value="en" size="small">
+                      EN
+                    </v-btn>
+                    <v-btn value="it" size="small">
+                      IT
+                    </v-btn>
+                  </v-btn-toggle>
+                </template>
               </v-list-item>
 
               <v-divider />
@@ -148,7 +177,7 @@ const isMonitoringPage = computed(() => route.path === '/events');
                 @click="handleLogout"
                 class="text-error"
               >
-                Logout
+                {{ t('user.logout') }}
               </v-list-item>
             </v-list>
           </v-menu>
@@ -171,15 +200,15 @@ const isMonitoringPage = computed(() => route.path === '/events');
       <v-card>
         <v-card-title class="d-flex align-center">
           <v-icon class="mr-2" color="warning">mdi-logout</v-icon>
-          Confirm Logout
+          {{ t('dialog.confirmLogout') }}
         </v-card-title>
 
         <v-card-text class="pt-4">
           <p class="text-body-1">
-            Are you sure you want to logout from the application?
+            {{ t('dialog.logoutMessage') }}
           </p>
           <p class="text-body-2 text-grey mt-2">
-            You will need to login again to use the system.
+            {{ t('dialog.logoutNote') }}
           </p>
         </v-card-text>
 
@@ -189,14 +218,14 @@ const isMonitoringPage = computed(() => route.path === '/events');
             variant="text"
             @click="cancelLogout"
           >
-            Cancel
+            {{ t('dialog.cancel') }}
           </v-btn>
           <v-btn
             color="primary"
             variant="elevated"
             @click="confirmLogout"
           >
-            Logout
+            {{ t('dialog.confirm') }}
           </v-btn>
         </v-card-actions>
       </v-card>

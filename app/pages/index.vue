@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useItemStore } from '@/stores/index';
 
+const { t } = useI18n();
 const itemStore = useItemStore();
 
 const dialog = ref(false);
@@ -20,15 +21,15 @@ const typeOptions = [
   'Type D',
 ];
 
-useHead({
-  title: 'Configuration',
+useHead(() => ({
+  title: t('configuration.title'),
   meta: [
     {
       name: 'description',
       content: 'Item management system'
     }
   ]
-});
+}));
 
 const addItem = () => {
   if (itemName.value && itemDescription.value && itemType.value) {
@@ -64,22 +65,22 @@ const resetForm = () => {
   itemPriority.value = 1;
 };
 
-const headers = [
-  { title: 'ID', key: 'id', align: 'start' },
-  { title: 'Name', key: 'name', align: 'start' },
-  { title: 'Description', key: 'description', align: 'start' },
-  { title: 'Type', key: 'type', align: 'start' },
-  { title: 'Priority', key: 'priority', align: 'start' },
-  { title: 'Enabled', key: 'enabled', align: 'center' },
-  { title: '', key: 'actions', align: 'center', sortable: false },
-] as const;
+const headers = computed(() => [
+  { title: t('configuration.table.id'), key: 'id', align: 'start' },
+  { title: t('configuration.table.name'), key: 'name', align: 'start' },
+  { title: t('configuration.table.description'), key: 'description', align: 'start' },
+  { title: t('configuration.table.type'), key: 'type', align: 'start' },
+  { title: t('configuration.table.priority'), key: 'priority', align: 'start' },
+  { title: t('configuration.table.enabled'), key: 'enabled', align: 'center' },
+  { title: t('configuration.table.actions'), key: 'actions', align: 'center', sortable: false },
+] as const);
 </script>
 
 <template>
   <v-container class="py-12">
     <v-row>
       <v-col cols="12">
-        <h1 class="text-h5 font-weight-bold mb-6">Configuration</h1>
+        <h1 class="text-h5 font-weight-bold mb-6">{{ t('configuration.title') }}</h1>
 
         <v-card elevation="2">
 
@@ -97,7 +98,7 @@ const headers = [
                   @click="item.enabled = !item.enabled"
                   style="cursor: pointer;"
                 >
-                  {{ item.enabled ? 'Enabled' : 'Disabled' }}
+                  {{ item.enabled ? t('configuration.status.enabled') : t('configuration.status.disabled') }}
                 </v-chip>
               </template>
 
@@ -118,7 +119,7 @@ const headers = [
                     prepend-icon="mdi-plus"
                     @click="dialog = true"
                   >
-                    Add
+                    {{ t('configuration.add') }}
                   </v-btn>
                 </div>
               </template>
@@ -133,13 +134,13 @@ const headers = [
       <v-card>
         <v-card-title class="bg-primary text-white d-flex align-center">
           <v-icon class="mr-2" color="white">mdi-plus</v-icon>
-          Add New Item
+          {{ t('configuration.addNewItem') }}
         </v-card-title>
 
         <v-card-text class="pt-6">
           <v-text-field
             v-model="itemName"
-            label="Item Name"
+            :label="t('configuration.form.itemName')"
             variant="outlined"
             density="comfortable"
             class="mb-4"
@@ -147,7 +148,7 @@ const headers = [
 
           <v-text-field
             v-model="itemDescription"
-            label="Description"
+            :label="t('configuration.form.description')"
             variant="outlined"
             density="comfortable"
             class="mb-4"
@@ -155,7 +156,7 @@ const headers = [
 
           <v-text-field
             v-model.number="itemPriority"
-            label="Priority"
+            :label="t('configuration.form.priority')"
             type="number"
             min="1"
             variant="outlined"
@@ -166,7 +167,7 @@ const headers = [
           <v-select
             v-model="itemType"
             :items="typeOptions"
-            label="Type"
+            :label="t('configuration.form.type')"
             variant="outlined"
             density="comfortable"
             class="mb-4"
@@ -174,7 +175,7 @@ const headers = [
 
           <v-switch
             v-model="itemEnabled"
-            label="Enabled"
+            :label="t('configuration.form.enabled')"
             color="primary"
             hide-details
           />
@@ -186,14 +187,14 @@ const headers = [
             variant="text"
             @click="dialog = false"
           >
-            Cancel
+            {{ t('dialog.cancel') }}
           </v-btn>
           <v-btn
             color="primary"
             variant="elevated"
             @click="addItem"
           >
-            Add
+            {{ t('configuration.add') }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -204,15 +205,15 @@ const headers = [
       <v-card>
         <v-card-title class="d-flex align-center">
           <v-icon class="mr-2" color="error">mdi-alert-circle</v-icon>
-          Confirm Delete
+          {{ t('configuration.confirmDelete') }}
         </v-card-title>
 
         <v-card-text class="pt-4">
           <p class="text-body-1">
-            Are you sure you want to delete this item?
+            {{ t('configuration.deleteMessage') }}
           </p>
           <p class="text-body-2 text-grey mt-2">
-            This action cannot be undone.
+            {{ t('configuration.deleteNote') }}
           </p>
         </v-card-text>
 
@@ -222,14 +223,14 @@ const headers = [
             variant="text"
             @click="cancelDelete"
           >
-            Cancel
+            {{ t('dialog.cancel') }}
           </v-btn>
           <v-btn
             color="error"
             variant="elevated"
             @click="confirmDelete"
           >
-            Delete
+            {{ t('configuration.delete') }}
           </v-btn>
         </v-card-actions>
       </v-card>

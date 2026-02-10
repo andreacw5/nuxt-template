@@ -15,7 +15,31 @@ export default defineNuxtConfig({
     }
   },
 
-  modules: ['vuetify-nuxt-module', '@pinia/nuxt'],
+  modules: ['vuetify-nuxt-module', '@pinia/nuxt', '@nuxtjs/i18n'],
+
+  i18n: {
+    locales: [
+      {
+        code: 'en',
+        name: 'English',
+        file: 'en.json'
+      },
+      {
+        code: 'it',
+        name: 'Italiano',
+        file: 'it.json'
+      }
+    ],
+    lazy: false,
+    langDir: 'i18n/locales/',
+    defaultLocale: 'en',
+    strategy: 'no_prefix',
+    detectBrowserLanguage: {
+      useCookie: true,
+      cookieKey: 'i18n_redirected',
+      redirectOn: 'root',
+    }
+  },
 
   vuetify: {
     moduleOptions: {
