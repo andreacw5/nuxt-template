@@ -52,6 +52,13 @@
       "disabled": "Disabled"
     }
   },
+  "seo": {
+    "title": "Configuration",
+    "description": "Manage your items configuration with an easy-to-use interface.",
+    "ogTitle": "Configuration",
+    "ogDescription": "Manage your items configuration with an easy-to-use interface.",
+    "ogImage": "https://example.com/images/configuration-cover.webp"
+  },
   "languages": {
     "en": "English",
     "it": "Italiano"

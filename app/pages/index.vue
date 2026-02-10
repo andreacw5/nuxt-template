@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useItemStore } from '@/stores/index';
+import { useItemStore } from '~/stores';
 
 const { t } = useI18n();
 const itemStore = useItemStore();
@@ -23,13 +23,17 @@ const typeOptions = [
 
 useHead(() => ({
   title: t('configuration.title'),
-  meta: [
-    {
-      name: 'description',
-      content: 'Item management system'
-    }
-  ]
 }));
+
+useSeoMeta({
+  title: t('seo.title'),
+  description: t('seo.description'),
+  ogTitle: t('seo.ogTitle'),
+  ogDescription: t('seo.ogDescription'),
+  ogType: 'website',
+  ogImage: t('seo.ogImage'),
+  twitterCard: 'summary_large_image',
+})
 
 const addItem = () => {
   if (itemName.value && itemDescription.value && itemType.value) {

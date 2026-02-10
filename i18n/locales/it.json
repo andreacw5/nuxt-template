@@ -52,6 +52,13 @@
       "disabled": "Disabilitato"
     }
   },
+  "seo": {
+    "title": "Configurazione",
+    "description": "Gestisci la configurazione dei tuoi elementi con un'interfaccia facile da usare.",
+    "ogTitle": "Configurazione",
+    "ogDescription": "Gestisci la configurazione dei tuoi elementi con un'interfaccia facile da usare.",
+    "ogImage": "https://example.com/images/configuration-cover.webp"
+  },
   "languages": {
     "en": "English",
     "it": "Italiano"
