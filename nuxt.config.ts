@@ -1,21 +1,63 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
 export default defineNuxtConfig({
+  ssr: true,
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
 
+  routeRules: {
+    '/rss.xml': { prerender: true },
+  },
+
   app: {
     head: {
+      titleTemplate: '%s - My Nuxt App',
+      meta: [
+        { name: 'robots', content: 'index, follow' }
+      ],
       link: [
-        {
-          rel: 'stylesheet',
-          href: 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap'
-        }
-      ]
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+        { rel: 'alternate', type: 'application/rss+xml', title: 'RSS', href: '/rss.xml' },
+      ],
     }
   },
 
-  modules: ['vuetify-nuxt-module', '@pinia/nuxt'],
+  modules: [
+    'vuetify-nuxt-module',
+    '@pinia/nuxt',
+    '@nuxtjs/i18n',
+    '@nuxtjs/seo',
+    '@nuxt/content',
+  ],
+
+  i18n: {
+    strategy: 'prefix_except_default',
+    locales: [
+      { code: 'en', iso: 'en-US', name: 'English', file: 'en.json' },
+      { code: 'it', iso: 'it-IT', name: 'Italiano', file: 'it.json' },
+    ],
+    defaultLocale: 'en',
+    detectBrowserLanguage: {
+      useCookie: true,
+      cookieKey: 'i18n_redirected',
+      redirectOn: 'root',
+    }
+  },
+
+  /*site: {
+    url: process.env.NUXT_PUBLIC_SITE_URL || 'http://localhost:3000',
+  },*/
+
+  robots: {
+    blockNonSeoBots: true,
+    blockAiBots: true,
+    groups: [
+      {
+        userAgent: '*',
+        allow: '/',
+      }
+    ],
+  },
 
   vuetify: {
     moduleOptions: {
