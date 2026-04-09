@@ -1,12 +1,22 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
+import {readFileSync} from "fs";
+import {resolve} from "path";
+
+const packageJson = JSON.parse(
+    readFileSync(resolve(__dirname, './package.json'), 'utf-8')
+)
+
 export default defineNuxtConfig({
   ssr: true,
-  compatibilityDate: '2025-07-15',
+  compatibilityDate: '2026-04-07',
   devtools: { enabled: true },
 
-  routeRules: {
-    '/rss.xml': { prerender: true },
+  runtimeConfig: {
+    public: {
+      version: packageJson.version,
+      apiBaseUrl: process.env.NUXT_PUBLIC_API_BASE_URL || 'http://localhost:8080',
+    },
   },
 
   app: {
@@ -16,8 +26,7 @@ export default defineNuxtConfig({
         { name: 'robots', content: 'index, follow' }
       ],
       link: [
-        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-        { rel: 'alternate', type: 'application/rss+xml', title: 'RSS', href: '/rss.xml' },
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
       ],
     }
   },
@@ -26,27 +35,29 @@ export default defineNuxtConfig({
     'vuetify-nuxt-module',
     '@pinia/nuxt',
     '@nuxtjs/i18n',
+    '@nuxtjs/google-fonts',
     '@nuxtjs/seo',
-    '@nuxt/content',
+    '@nuxtjs/robots',
   ],
 
   i18n: {
     strategy: 'prefix_except_default',
     locales: [
-      { code: 'en', iso: 'en-US', name: 'English', file: 'en.json' },
       { code: 'it', iso: 'it-IT', name: 'Italiano', file: 'it.json' },
+      { code: 'en', iso: 'en-US', name: 'English', file: 'en.json' },
     ],
-    defaultLocale: 'en',
+    defaultLocale: 'it',
     detectBrowserLanguage: {
       useCookie: true,
       cookieKey: 'i18n_redirected',
       redirectOn: 'root',
+      alwaysRedirect: true,
+    },
+    compilation: {
+      strictMessage: false,
+      escapeHtml: false
     }
   },
-
-  /*site: {
-    url: process.env.NUXT_PUBLIC_SITE_URL || 'http://localhost:3000',
-  },*/
 
   robots: {
     blockNonSeoBots: true,
@@ -59,9 +70,22 @@ export default defineNuxtConfig({
     ],
   },
 
+  googleFonts: {
+    subsets: ['latin'],
+    families: {
+      Inter: [400, 700],
+    },
+    display: 'swap',
+    prefetch: false,
+    preconnect: true,
+    preload: false,
+    inject: true,
+    download: true,
+  },
+
   vuetify: {
     moduleOptions: {
-      // Opzioni del modulo
+      styles: { configFile: '/assets/settings.scss' },
     },
     vuetifyOptions: {
       // Configurazione di Vuetify
@@ -119,8 +143,12 @@ export default defineNuxtConfig({
   },
 
   css: [
-    '~/assets/css/main.css',
+    '~/assets/main.scss',
   ],
+
+  nitro: {
+    compressPublicAssets: true,
+  },
 
   build: {
     transpile: ['vuetify'],

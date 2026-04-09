@@ -25,12 +25,29 @@
   },
   "configuration": {
     "title": "Configuration",
+    "subtitle": "Manage and monitor your items configuration.",
     "addNewItem": "Add New Item",
+    "editItem": "Edit Item",
     "add": "Add",
+    "edit": "Edit",
+    "save": "Save",
     "delete": "Delete",
     "confirmDelete": "Confirm Delete",
     "deleteMessage": "Are you sure you want to delete this item?",
     "deleteNote": "This action cannot be undone.",
+    "itemAdded": "Item added successfully.",
+    "itemUpdated": "Item updated successfully.",
+    "itemDeleted": "Item deleted.",
+    "search": "Search by name or description…",
+    "filterType": "Filter by type",
+    "items": "items",
+    "noItems": "No items found",
+    "noItemsHint": "Try adjusting your search or add a new item.",
+    "stats": {
+      "total": "Total Items",
+      "enabled": "Enabled",
+      "disabled": "Disabled"
+    },
     "table": {
       "id": "ID",
       "name": "Name",
@@ -51,6 +68,10 @@
       "enabled": "Enabled",
       "disabled": "Disabled"
     }
+  },
+  "validation": {
+    "required": "This field is required.",
+    "minLength": "Must be at least 2 characters."
   },
   "seo": {
     "title": "Configuration",

@@ -1,13 +1,22 @@
+<script setup lang="ts">
+</script>
+
 <template>
   <v-app>
-
-    <NuxtLayout>
-      <NuxtPage />
-    </NuxtLayout>
+    <nuxt-layout>
+      <nuxt-page />
+    </nuxt-layout>
   </v-app>
 </template>
 
 <style>
-@import 'assets/css/main.css';
+.layout-enter-active,
+.layout-leave-active {
+  transition: all 0.4s;
+}
+.layout-enter-from,
+.layout-leave-to {
+  filter: grayscale(1);
+}
 </style>
 
