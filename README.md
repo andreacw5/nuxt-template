@@ -1,204 +1,260 @@
 # Nuxt Starter Template
 
-A modern, clean Nuxt 4 starter template with Vuetify 3, Pinia state management, and TypeScript support.
+A modern, clean Nuxt 4 starter template with Vuetify 3, Pinia state management, i18n support, and TypeScript.
 
 ## Features
 
 ✨ **Modern Stack**
-- Nuxt 4
+- Nuxt 4 (compatibility date: 2026-04-07)
 - Vue 3 with Composition API
 - Vuetify 3 UI Framework
 - TypeScript
 - Pinia for state management
 - Vue Router
 
-🎨 **Pre-configured Components**
-- Professional layout with navigation
-- Data table management
-- Dialog forms
-- User menu with profile options
-- Responsive design
+🌍 **Internationalisation**
+- `@nuxtjs/i18n` with `prefix_except_default` strategy
+- Browser-language detection with cookie persistence
+- Locale files: `en` (English) and `it` (Italiano – default)
+- Flag assets included for each locale
 
-📦 **Ready to Customize**
-- Generic item management example
-- Event management store
-- Extensible architecture
-- Clean code structure
+🎨 **Pre-configured UI**
+- Responsive app bar with desktop & mobile navigation
+- Light / Dark theme toggle (persisted in `localStorage`, respects `prefers-color-scheme`)
+- Language switcher with flag avatars
+- User menu with profile, settings and logout dialogs
+- Snackbar notifications
+- Full CRUD data table with search, type filter and stats
+
+🔍 **SEO & Bots**
+- `@nuxtjs/seo` for `useSeoMeta` / `useHead` helpers
+- `@nuxtjs/robots` – blocks non-SEO and AI bots; allows `*`
+- `@nuxtjs/google-fonts` – Inter 400/700, display swap, self-hosted download
+
+📦 **Ready to Customise**
+- Generic item management example (no seed data)
+- Extensible Pinia store architecture
+- Clean, commented code structure
+
+---
 
 ## Quick Start
 
 ### Installation
 
 ```bash
-# Install dependencies
-npm install
+# Install dependencies (pnpm recommended)
+pnpm install
 
 # Start development server
-npm run dev
+pnpm dev
 ```
 
-The application will be available at `http://localhost:3000`
+The application will be available at `http://localhost:3000`.
 
 ### Build for Production
 
 ```bash
-# Build the application
-npm run build
-
-# Preview production build
-npm run preview
+pnpm build
+pnpm preview
 ```
 
 ### Generate Static Site
 
 ```bash
-# Generate static version
-npm run generate
+pnpm generate
 ```
+
+---
 
 ## Project Structure
 
 ```
 app/
+├── app.vue                  # Root component with layout transitions
+├── assets/
+│   ├── main.scss            # Global styles
+│   └── settings.scss        # Vuetify SCSS variables
 ├── layouts/
-│   └── default.vue          # Main layout with navigation and header
+│   └── default.vue          # Main layout: app bar, nav drawer, dialogs
 ├── pages/
-│   └── index.vue            # Configuration page with item management
-├── stores/
-│   ├── plm.ts               # Item and rules state management
-│   ├── carePath.ts          # Events state management
-│   └── projects.ts          # Projects portfolio (can be removed)
-└── assets/
-    └── css/
-        └── main.css         # Global styles
+│   └── index.vue            # Item management page (CRUD table)
+├── plugins/                 # Place auto-imported Nuxt plugins here
+└── stores/
+    ├── index.ts             # Item store (useItemStore)
+    └── theme.ts             # Theme store (useThemeStore)
+i18n/
+└── locales/
+    ├── en.json              # English translations
+    └── it.json              # Italian translations (default locale)
+public/
+├── flags/                   # SVG flag icons (de, es, fr, gb, it)
+└── socials/                 # SVG social icons
 ```
+
+---
 
 ## Key Files
 
-### `/app/stores/plm.ts`
-Generic item store with CRUD operations. Contains:
-- `Item` interface for data model
-- `useItemStore()` - Pinia store for items management
-- Default sample data
+### `app/stores/index.ts`
+Generic item store with full CRUD operations.
 
-### `/app/stores/carePath.ts`
-Generic event store with CRUD operations. Contains:
-- `AppEvent` interface for data model
-- `useEventStore()` - Pinia store for events management
-- Default sample data
+```typescript
+export interface Item {
+  id: number;
+  name: string;
+  description: string;
+  enabled: boolean;
+  type: string;
+  priority?: number;
+}
 
-### `/app/layouts/default.vue`
+export const useItemStore = defineStore('items', {
+  state: () => ({ items: [] as Item[], nextId: 1 }),
+  actions: { addItem, removeItem, updateItem },
+});
+```
+
+### `app/stores/theme.ts`
+Manages light/dark theme with `localStorage` persistence and system-preference detection.
+
+```typescript
+export const useThemeStore = defineStore('theme', {
+  state: () => ({ isDark: false }),
+  getters: { currentTheme: (state) => state.isDark ? 'dark' : 'light' },
+  actions: { toggleTheme, setTheme, initTheme },
+});
+```
+
+### `app/layouts/default.vue`
 Main application layout including:
-- Application header with navigation
-- User menu with profile options
-- Dialogs for event management
-- Responsive sidebar
+- Responsive app bar with desktop navigation buttons and a mobile drawer
+- Light/Dark theme toggle
+- Language switcher (flag + locale code)
+- User menu with profile/settings links and logout confirmation dialog
+- Named slot `event-dialog` for page-level dialogs
 
-### `/app/pages/index.vue`
+### `app/pages/index.vue`
 Home page with:
-- Data table of items
-- Add item dialog
-- Delete confirmation
-- Item management actions
+- Stats row (total / enabled / disabled items)
+- Searchable, filterable `v-data-table`
+- Add / Edit / Delete dialogs with form validation
+- Inline enable/disable toggle
+- Snackbar feedback
 
-## Customization
+---
+
+## Customisation
 
 ### Adding New Pages
 
-Create a new file in `/app/pages/` (e.g., `events.vue`):
+Create a file in `app/pages/` (e.g., `events.vue`):
 
 ```vue
 <script setup lang="ts">
-import { useEventStore } from '@/stores/carePath';
-
-const eventStore = useEventStore();
+const { t } = useI18n();
+useHead(() => ({ title: t('nav.events') }));
 </script>
 
 <template>
-  <v-container class="py-12">
+  <v-container class="py-8">
     <!-- Your content here -->
   </v-container>
 </template>
 ```
 
-### Modifying the Store
-
-Edit `/app/stores/plm.ts` or `/app/stores/carePath.ts` to change the data model:
+### Adding a New Store
 
 ```typescript
-export interface CustomItem {
-  id: number;
-  // Add your fields here
-}
+// app/stores/myStore.ts
+import { defineStore } from 'pinia';
 
-export const useCustomStore = defineStore('custom', {
-  state: () => ({
-    items: [] as CustomItem[],
-  }),
+export interface MyModel { id: number; /* ... */ }
+
+export const useMyStore = defineStore('my', {
+  state: () => ({ items: [] as MyModel[] }),
   actions: {
-    // Add your actions here
+    addItem(item: Omit<MyModel, 'id'>) { /* ... */ },
   },
 });
 ```
 
 ### Updating Navigation
 
-Edit `/app/layouts/default.vue` to add new menu items:
+Edit `navItems` in `app/layouts/default.vue`:
 
-```vue
-<v-btn
-  to="/your-page"
-  prepend-icon="mdi-icon-name"
-  variant="text"
-  color="white"
->
-  Your Page
-</v-btn>
+```typescript
+const navItems = computed(() => [
+  { title: t('nav.home'),     icon: 'mdi-view-dashboard-outline', to: '/'         },
+  { title: t('nav.events'),   icon: 'mdi-calendar-clock-outline', to: '/events'   },
+  { title: t('nav.settings'), icon: 'mdi-cog-outline',            to: '/settings' },
+]);
 ```
+
+### Adding Locales
+
+1. Add a new entry to the `i18n.locales` array in `nuxt.config.ts`.
+2. Create the matching file in `i18n/locales/` (e.g., `de.json`).
+3. Add the flag SVG to `public/flags/`.
+4. Register it in `getFlagPath` and `getLanguageName` inside `default.vue`.
+
+---
+
+## Theme Customisation
+
+Colours are defined in `nuxt.config.ts` under `vuetify.vuetifyOptions.theme`.
+
+| Token | Light | Dark |
+|---|---|---|
+| `primary` | `#1976D2` | `#BB86FC` |
+| `secondary` | `#546E7A` | `#03DAC6` |
+| `accent` | `#0091EA` | `#FF6E40` |
+| `error` | `#D32F2F` | `#CF6679` |
+| `success` | `#388E3C` | `#4CAF50` |
+| `warning` | `#F57C00` | `#FFC107` |
+| `background` | `#FAFAFA` | `#1A1A1A` |
+| `surface` | `#FFFFFF` | `#252525` |
+
+The Vuetify SCSS override file is `app/assets/settings.scss`.
+
+---
 
 ## Available Scripts
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build locally
-- `npm run generate` - Generate static site
+| Command | Description |
+|---|---|
+| `pnpm dev` | Start development server with Nuxt DevTools |
+| `pnpm build` | Build for production (SSR) |
+| `pnpm preview` | Preview production build locally |
+| `pnpm generate` | Generate static site |
+| `pnpm start` | Run built SSR server |
 
-## Theme Customization
+---
 
-The theme colors are configured in `nuxt.config.ts`. Modify the `vuetify.vuetifyOptions.theme` section:
+## Runtime Config
 
-```typescript
-colors: {
-  primary: '#1976D2',
-  secondary: '#424242',
-  error: '#FF5252',
-  success: '#4CAF50',
-  warning: '#FFC107',
-  // ... more colors
-}
-```
+| Key | Default | Override |
+|---|---|---|
+| `public.version` | from `package.json` | – |
+| `public.apiBaseUrl` | `http://localhost:8080` | `NUXT_PUBLIC_API_BASE_URL` |
+
+---
 
 ## Docker Support
 
-A `Dockerfile` and `docker-compose.yml` are included for containerized deployment.
-
-### Build and Run with Docker
+A `Dockerfile` and `docker-compose.yml` are included for containerised deployment.
 
 ```bash
-# Build the image
+# Build and run with Docker Compose
+docker-compose up --build
+
+# Or manually
 docker build -t nuxt-starter .
-
-# Run the container
 docker run -p 3000:3000 nuxt-starter
-
-# Or use docker-compose
-docker-compose up
 ```
+
+---
 
 ## License
 
-This template is open source and available under the MIT License.
-
-## Support
-
-For issues and feature requests, please create an issue in the repository.
+This template is open source and available under the [MIT License](LICENSE.md).
