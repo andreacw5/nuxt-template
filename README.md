@@ -13,7 +13,7 @@ Starter Nuxt 4 minimale: CSS puro, SSR Node, pnpm. Niente UI library, niente sto
 
 1. `siteUrl` e `siteName` in cima a `nuxt.config.ts`
 2. `name` in `package.json`
-3. Token colore in `app/assets/main.css` e `public/favicon.svg`
+3. Token colore in `app/assets/main.css`, `public/favicon.svg` e `public/og.png`
 4. Registry in `.github/workflows/build-image.yml` (secret `DOCKER_USERNAME` / `DOCKER_PASSWORD`)
 
 ## Comandi

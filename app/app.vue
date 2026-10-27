@@ -17,6 +17,11 @@ useSeoMeta({
   ogType: 'website',
   ogSiteName: siteName,
   ogUrl: url,
+  ogImage: `${siteUrl}/og.png`,
+  ogImageWidth: 1200,
+  ogImageHeight: 630,
+  ogImageType: 'image/png',
+  ogImageAlt: siteName,
   twitterCard: 'summary_large_image',
 })
 </script>
