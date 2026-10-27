@@ -1,0 +1,151 @@
+/* Design tokens. Dark is the default; every token also gets a light value below. */
+:root {
+  --accent: #00a86b;
+  --accent-dark: #007a4d;
+  --accent-light: #33bf89;
+  /* --accent as channels, for tints: rgb(var(--accent-rgb) / 0.1). */
+  --accent-rgb: 0 168 107;
+  --on-accent: #04140d;
+  --bg: #1e201e;
+  --surface: #252725;
+  --ink: #eef1ef;
+  --ink-2: #d1d5d2;
+  --ink-3: #a1a6a2;
+  --hair: rgb(var(--accent-rgb) / 0.16);
+  --r-sm: 10px;
+  --r-lg: 14px;
+
+  --text-sm: 0.875rem;
+  --text-label: 0.94rem;
+  --text-md: 1.1rem;
+
+  --sans: 'Manrope', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --gutter: clamp(1rem, 4vw, 3rem);
+  --max: 1240px;
+  --section: clamp(5rem, 11vw, 8.5rem);
+
+  color-scheme: dark;
+}
+
+/* Light theme: set by @nuxtjs/color-mode on <html data-theme>. */
+:root[data-theme='light'] {
+  /* Darker accent for text: the light one fails contrast on a light ground. */
+  --accent-light: #007a4d;
+  --bg: #f3f5f3;
+  --surface: #ffffff;
+  --ink: #151816;
+  --ink-2: #3a403c;
+  --ink-3: #5c635e;
+  --hair: rgb(0 122 77 / 0.18);
+
+  color-scheme: light;
+}
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  /* Focus moved by Tab or after a route change never lands under a sticky header. */
+  scroll-padding-top: 6rem;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 1rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection { background: var(--accent); color: var(--on-accent); }
+
+h1, h2, h3, h4 {
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+  text-wrap: balance;
+}
+
+p { margin: 0; text-wrap: pretty; }
+
+a {
+  color: var(--accent-light);
+  text-underline-offset: 0.22em;
+  transition: color 0.2s ease;
+}
+a:hover { color: var(--ink); }
+
+img { display: block; max-width: 100%; height: auto; }
+
+:focus-visible {
+  outline: 2px solid var(--accent-light);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.wrap {
+  width: 100%;
+  max-width: var(--max);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ── Buttons ───────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.95rem 1.6rem;
+  border-radius: var(--r-sm);
+  font: 600 1rem/1 var(--sans);
+  text-decoration: none;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: translate 0.35s var(--ease-out), background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+.btn--primary { background: var(--accent); color: var(--on-accent); }
+.btn--primary:hover { color: var(--on-accent); translate: 0 -2px; }
+.btn--primary:active { background: var(--accent-dark); translate: 0 0; }
+.btn--ghost {
+  color: var(--ink);
+  border-color: var(--accent-light);
+  background: rgb(var(--accent-rgb) / 0.05);
+}
+.btn--ghost:hover { color: var(--ink); background: rgb(var(--accent-rgb) / 0.1); }
+
+/* ── Page transition ───────────────────────────── */
+.page-enter-active,
+.page-leave-active { transition: opacity 0.3s var(--ease-out), transform 0.3s var(--ease-out); }
+.page-enter-from,
+.page-leave-to { opacity: 0; transform: translateY(14px); }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-delay: 0s !important;
+    transition-delay: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
